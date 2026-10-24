@@ -49,6 +49,14 @@ jobs:
       - name: Execute every example and assertion
         run: bash scripts/run_examples.sh
 
+      - name: Execute read-only query-plan benchmark smoke tests
+        run: |
+          docker compose exec -T db psql \
+            -U patterns \
+            -d postgis_patterns \
+            -v ON_ERROR_STOP=1 \
+            < scripts/benchmark_queries.sql
+
       - name: Show database logs on failure
         if: failure()
         run: docker compose logs --no-color db
